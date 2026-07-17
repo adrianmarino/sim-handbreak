@@ -1,0 +1,62 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/home/adrian/development/sim-handbrake/include",
+                "/home/adrian/development/sim-handbrake/src",
+                "/home/adrian/development/sim-handbrake/.pio/libdeps/leonardo/Joystick/src",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/variants/leonardo",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/home/adrian/development/sim-handbrake/include",
+                    "/home/adrian/development/sim-handbrake/src",
+                    "/home/adrian/development/sim-handbrake/.pio/libdeps/leonardo/Joystick/src",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/variants/leonardo",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60119",
+                "ARDUINO_AVR_LEONARDO",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "USB_VID=0x2341",
+                "USB_PID=0x8036",
+                "USB_PRODUCT=\"Hardbreak\"",
+                "USB_MANUFACTURER=\"Arduino\"",
+                "__AVR_ATmega32U4__",
+                ""
+            ],
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++11",
+            "compilerPath": "/home/adrian/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega32u4",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
