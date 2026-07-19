@@ -3,13 +3,13 @@
 
 /**
  * @class AnalogSensor
- * @brief Clase para lectura de sensores analógicos.
+ * @brief Class for reading analog sensors.
  * 
- * Encapsula la lectura de pines analógicos del Arduino,
- * proporcionando una interfaz simple y reutilizable para
- * sensores que retornan valores en el rango del ADC (0-1023).
+ * Encapsulates Arduino analog pin reading, providing a simple
+ * and reusable interface for sensors that return values in the
+ * ADC range (0-1023).
  * 
- * @note Requiere llamada a begin() antes de usar read()
+ * @note Requires calling begin() before using read()
  * 
  * @code
  * AnalogSensor sensor(A3);
@@ -20,23 +20,23 @@
 class AnalogSensor {
 public:
     /**
-     * @brief Constructor de AnalogSensor.
-     * @param pin Número de pin analógico (ej: A0, A1, A3)
+     * @brief AnalogSensor constructor.
+     * @param pin Analog pin number (e.g.: A0, A1, A3)
      */
     AnalogSensor(uint8_t pin);
 
     /**
-     * @brief Inicializa el sensor configurando el pin como entrada.
-     * @note Debe llamarse en setup() antes de read()
+     * @brief Initializes the sensor by configuring the pin as input.
+     * @note Must be called in setup() before read()
      */
     void begin();
 
     /**
-     * @brief Lee el valor actual del sensor analógico.
-     * @return Valor ADC en rango [0, 1023]
+     * @brief Reads the current analog sensor value.
+     * @return ADC value in range [0, 1023]
      */
     int read();
 
 private:
-    uint8_t _pin; ///< Pin analógico asociado al sensor
+    uint8_t _pin; ///< Analog pin associated with the sensor
 };

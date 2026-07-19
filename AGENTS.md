@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Simulador de freno de mano USB para sim racing. Convierte la lectura analógica de un potenciómetro en un eje de joystick USB reconocido automáticamente por simuladores de carreras.
+USB handbrake simulator for sim racing. Converts the analog reading of a potentiometer into a USB joystick axis automatically recognized by racing simulators.
 
 **Target Hardware**: Arduino Leonardo (ATmega32U4)  
 **USB Product**: "Handbrake"  

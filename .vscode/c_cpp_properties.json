@@ -8,11 +8,13 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/home/adrian/development/sim-handbrake/include",
-                "/home/adrian/development/sim-handbrake/src",
-                "/home/adrian/development/sim-handbrake/.pio/libdeps/leonardo/Joystick/src",
+                "/home/adrian/development/sim-handbreak/include",
+                "/home/adrian/development/sim-handbreak/src",
+                "/home/adrian/development/sim-handbreak/.pio/libdeps/leonardo/Joystick/src",
                 "/home/adrian/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "/home/adrian/.platformio/packages/framework-arduino-avr/variants/leonardo",
+                "/home/adrian/development/sim-handbreak/lib/handbrake/include",
+                "/home/adrian/development/sim-handbreak/lib/handbrake/src",
                 "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -23,11 +25,13 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/home/adrian/development/sim-handbrake/include",
-                    "/home/adrian/development/sim-handbrake/src",
-                    "/home/adrian/development/sim-handbrake/.pio/libdeps/leonardo/Joystick/src",
+                    "/home/adrian/development/sim-handbreak/include",
+                    "/home/adrian/development/sim-handbreak/src",
+                    "/home/adrian/development/sim-handbreak/.pio/libdeps/leonardo/Joystick/src",
                     "/home/adrian/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "/home/adrian/.platformio/packages/framework-arduino-avr/variants/leonardo",
+                    "/home/adrian/development/sim-handbreak/lib/handbrake/include",
+                    "/home/adrian/development/sim-handbreak/lib/handbrake/src",
                     "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "/home/adrian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -44,7 +48,7 @@
                 "ARDUINO=10808",
                 "USB_VID=0x2341",
                 "USB_PID=0x8036",
-                "USB_PRODUCT=\"Hardbreak\"",
+                "USB_PRODUCT=\"Handbrake\"",
                 "USB_MANUFACTURER=\"Arduino\"",
                 "__AVR_ATmega32U4__",
                 ""

@@ -6,26 +6,25 @@
 
 /**
  * @class HandbrakeController
- * @brief Facade que orquesta todo el pipeline del freno de mano.
+ * @brief Facade that orchestrates the full handbrake pipeline.
  * 
- * Implementa el patrón Facade para coordinar los componentes
- * del sistema: sensor, filtro, calibrador y sender. Sigue el
- * principio de inversión de dependencias (DIP) recibiendo las
- * dependencias por inyección.
+ * Implements the Facade pattern to coordinate system components:
+ * sensor, filter, calibrator, and sender. Follows the Dependency
+ * Inversion Principle (DIP) by receiving dependencies via injection.
  * 
- * ## Flujo de datos
+ * ## Data Flow
  * ```
- * Sensor → Filtro → Calibrador → Sender USB
+ * Sensor → Filter → Calibrator → USB Sender
  * ```
  * 
  * @code
- * // Configurar componentes
+ * // Configure components
  * AnalogSensor sensor(A3);
  * MovingAverageFilter filter(8);
  * Calibrator calibrator({945, 735, 0, 1023});
  * JoystickSender sender;
  * 
- * // Crear controller con inyección
+ * // Create controller with injection
  * HandbrakeController handbrake(&sensor, &filter, &calibrator, &sender);
  * 
  * void setup() {
@@ -38,22 +37,22 @@
  * }
  * @endcode
  * 
- * @see AnalogSensor para lectura de hardware
- * @see MovingAverageFilter para filtrado de señal
- * @see Calibrator para mapeo de valores
- * @see JoystickSender para envío USB
+ * @see AnalogSensor for hardware reading
+ * @see MovingAverageFilter for signal filtering
+ * @see Calibrator for value mapping
+ * @see JoystickSender for USB sending
  */
 class HandbrakeController {
 public:
     /**
-     * @brief Constructor con inyección de dependencias.
-     * @param sensor Puntero al sensor analógico
-     * @param filter Puntero al filtro de media móvil
-     * @param calibrator Puntero al calibrador de valores
-     * @param sender Puntero al enviador USB
+     * @brief Constructor with dependency injection.
+     * @param sensor Pointer to the analog sensor
+     * @param filter Pointer to the moving average filter
+     * @param calibrator Pointer to the value calibrator
+     * @param sender Pointer to the USB sender
      * 
-     * @pre Todos los punteros deben ser válidos
-     * @post El controller toma posesión lógica de los componentes
+     * @pre All pointers must be valid
+     * @post Controller takes logical ownership of the components
      */
     HandbrakeController(
         AnalogSensor* sensor,
@@ -63,22 +62,22 @@ public:
     );
 
     /**
-     * @brief Inicializa todos los componentes del pipeline.
-     * @note Llama begin() a cada componente inyectado
-     * @note Debe llamarse en setup()
+     * @brief Initializes all pipeline components.
+     * @note Calls begin() on each injected component
+     * @note Must be called in setup()
      */
     void begin();
 
     /**
-     * @brief Ejecuta un ciclo completo del pipeline.
-     * @note Lee → Filtra → Calibra → Envía
-     * @note Llamar en loop() con intervalo de 10ms (100Hz)
+     * @brief Executes a complete pipeline cycle.
+     * @note Read → Filter → Calibrate → Send
+     * @note Call in loop() with 10ms interval (100Hz)
      */
     void update();
 
 private:
-    AnalogSensor* _sensor;          ///< Sensor analógico inyectado
-    MovingAverageFilter* _filter;   ///< Filtro de media móvil inyectado
-    Calibrator* _calibrator;        ///< Calibrador de valores inyectado
-    JoystickSender* _sender;        ///< Sender USB inyectado
+    AnalogSensor* _sensor;          ///< Injected analog sensor
+    MovingAverageFilter* _filter;   ///< Injected moving average filter
+    Calibrator* _calibrator;        ///< Injected value calibrator
+    JoystickSender* _sender;        ///< Injected USB sender
 };

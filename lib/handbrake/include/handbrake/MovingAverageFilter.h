@@ -2,56 +2,56 @@
 
 /**
  * @class MovingAverageFilter
- * @brief Filtro de media móvil para suavizado de señales.
+ * @brief Moving average filter for signal smoothing.
  * 
- * Implementa un filtro de media móvil circular (ring buffer) para
- * reducir ruido en lecturas de sensores analógicos. El filtro
- * promedia las últimas N muestras para obtener un valor estable.
+ * Implements a circular moving average filter (ring buffer) to
+ * reduce noise in analog sensor readings. The filter averages
+ * the last N samples to obtain a stable value.
  * 
- * @note Usa asignación dinámica de memoria para el buffer circular
+ * @note Uses dynamic memory allocation for the circular buffer
  * 
  * @code
  * MovingAverageFilter filter(8);
  * filter.begin();
  * 
- * // En loop:
+ * // In loop:
  * int raw = analogRead(A3);
  * int filtered = filter.process(raw);
  * @endcode
  * 
- * @see AnalogSensor para lectura de hardware
- * @see Calibrator para mapeo de valores
+ * @see AnalogSensor for hardware reading
+ * @see Calibrator for value mapping
  */
 class MovingAverageFilter {
 public:
     /**
-     * @brief Constructor del filtro de media móvil.
-     * @param samples Número de muestras para el promedio (ventana del filtro)
-     * @note Mayor samples = más suavizado pero mayor latencia
+     * @brief Moving average filter constructor.
+     * @param samples Number of samples for averaging (filter window)
+     * @note Higher samples = more smoothing but higher latency
      */
     MovingAverageFilter(int samples);
 
     /**
-     * @brief Destructor - libera memoria del buffer circular.
+     * @brief Destructor - frees circular buffer memory.
      */
     ~MovingAverageFilter();
 
     /**
-     * @brief Inicializa el filtro en cero.
-     * @note Debe llamarse antes del primer process()
+     * @brief Initializes the filter to zero.
+     * @note Must be called before the first process()
      */
     void begin();
 
     /**
-     * @brief Procesa una nueva muestra y retorna el promedio.
-     * @param newValue Nuevo valor a agregar al filtro
-     * @return Promedio de las últimas N muestras
+     * @brief Processes a new sample and returns the average.
+     * @param newValue New value to add to the filter
+     * @return Average of the last N samples
      */
     int process(int newValue);
 
 private:
-    int _samples;    ///< Tamaño de la ventana del filtro
-    int* _readings;  ///< Buffer circular de muestras
-    int _readIndex;  ///< Índice actual en el buffer circular
-    long _total;     ///< Acumulador para cálculo eficiente del promedio
+    int _samples;    ///< Filter window size
+    int* _readings;  ///< Circular sample buffer
+    int _readIndex;  ///< Current index in circular buffer
+    long _total;     ///< Accumulator for efficient average calculation
 };

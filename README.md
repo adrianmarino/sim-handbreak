@@ -4,61 +4,61 @@
 [![Arduino](https://img.shields.io/badge/Arduino-Leonardo-teal)](https://www.arduino.cc/en/Main/ArduinoBoardLeonardo)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Simulador de freno de mano USB para sim racing.**
+**USB handbrake simulator for sim racing.**
 
-Convierte la lectura analógica de un potenciómetro en un eje de joystick USB reconocido automáticamente por simuladores de carreras como iRacing, Assetto Corsa, Gran Turismo, F1, entre otros.
-
----
-
-## Tabla de contenidos
-
-- [Características](#características)
-- [Hardware requerido](#hardware-requerido)
-- [Diagrama de conexión](#diagrama-de-conexión)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Calibración](#calibración)
-- [Arquitectura del software](#arquitectura-del-software)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [API de clases](#api-de-clases)
-- [Configuración](#configuración)
-- [Solución de problemas](#solución-de-problemas)
-- [Mejoras futuras](#mejoras-futuras)
-- [Licencia](#licencia)
+Converts the analog reading of a potentiometer into a USB joystick axis automatically recognized by racing simulators such as iRacing, Assetto Corsa, Gran Turismo, F1, and others.
 
 ---
 
-## Características
+## Table of contents
 
-- ✅ **USB HID nativo** - No requiere drivers adicionales
-- ✅ **Filtro de ruido** - Media móvil configurable para lecturas estables
-- ✅ **Calibración** - Mapeo personalizable de valores del potenciómetro
-- ✅ **Alta frecuencia** - Actualización a 100Hz (10ms)
-- ✅ **Arquitectura SOLID** - Código modular y mantenible
+- [Features](#features)
+- [Required hardware](#required-hardware)
+- [Connection diagram](#connection-diagram)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Calibration](#calibration)
+- [Software architecture](#software-architecture)
+- [Project structure](#project-structure)
+- [Class API](#class-api)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Future improvements](#future-improvements)
+- [License](#license)
+
+---
+
+## Features
+
+- ✅ **Native USB HID** - No additional drivers required
+- ✅ **Noise filtering** - Configurable moving average for stable readings
+- ✅ **Calibration** - Customizable potentiometer value mapping
+- ✅ **High frequency** - 100Hz update rate (10ms)
+- ✅ **SOLID architecture** - Modular and maintainable code
 - ✅ **Compatible** - iRacing, Assetto Corsa, F1, Gran Turismo, etc.
 
 ---
 
-## Hardware requerido
+## Required hardware
 
-| Componente | Cantidad | Descripción |
-|------------|----------|-------------|
-| Arduino Leonardo | 1 | Microcontrolador con USB nativo (ATmega32U4) |
-| Potenciómetro lineal | 1 | 10KΩ recomendado (0-10KΩ) |
-| Cable USB | 1 | Micro-USB (soporte datos, no solo carga) |
-| Protoboard/Cables | - | Para conexiones temporales |
+| Component | Quantity | Description |
+|-----------|----------|-------------|
+| Arduino Leonardo | 1 | Microcontroller with native USB (ATmega32U4) |
+| Linear potentiometer | 1 | 10KΩ recommended (0-10KΩ) |
+| USB cable | 1 | Micro-USB (data support, not charge-only) |
+| Protoboard/Wires | - | For temporary connections |
 
-### Compatibilidad
+### Compatibility
 
-- **Arduino Leonardo** (recomendado) - USB HID nativo
-- **Arduino Pro Micro** - Mismo chip ATmega32U4
-- **SparkFun Pro Micro** - Alternativa compatible
+- **Arduino Leonardo** (recommended) - Native USB HID
+- **Arduino Pro Micro** - Same ATmega32U4 chip
+- **SparkFun Pro Micro** - Compatible alternative
 
-> **Nota**: No se recomienda Arduino Uno/Nano para esta aplicación ya que no tienen USB HID nativo.
+> **Note**: Arduino Uno/Nano are not recommended for this application as they lack native USB HID.
 
 ---
 
-## Diagrama de conexión
+## Connection diagram
 
 ```mermaid
 graph TD
@@ -68,7 +68,7 @@ graph TD
         GND_A["GND"]
     end
     
-    subgraph Pot["Potenciómetro 10KΩ"]
+    subgraph Pot["10KΩ Potentiometer"]
         P1["Terminal 1<br/>VCC"]
         P2["Terminal 2<br/>Wiper"]
         P3["Terminal 3<br/>GND"]
@@ -86,9 +86,9 @@ graph TD
     style P2 fill:#ff9800,color:#fff
 ```
 
-### Pinout detallado
+### Detailed pinout
 
-| Potenciómetro | Arduino Leonardo |
+| Potentiometer | Arduino Leonardo |
 |---------------|------------------|
 | Terminal 1 (VCC) | 5V |
 | Terminal 2 (Wiper) | A3 |
@@ -96,137 +96,137 @@ graph TD
 
 ---
 
-## Instalación
+## Installation
 
-### Requisitos previos
+### Prerequisites
 
-1. **PlatformIO** instalado (CLI o VS Code)
-2. **Arduino Leonardo** conectado via USB
+1. **PlatformIO** installed (CLI or VS Code)
+2. **Arduino Leonardo** connected via USB
 
-### Pasos
+### Steps
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/sim-handbreak.git
+# 1. Clone the repository
+git clone https://github.com/adrianmarino/sim-handbreak.git
 cd sim-handbreak
 
-# 2. Instalar dependencias (automático con PlatformIO)
+# 2. Install dependencies (automatic with PlatformIO)
 pio run
 
-# 3. Subir al Arduino
+# 3. Upload to Arduino
 pio run -t upload
 
-# 4. (Opcional) Monitorear serial
+# 4. (Optional) Monitor serial output
 pio device monitor
 ```
 
-### Desde VS Code
+### From VS Code
 
-1. Abrir la carpeta del proyecto en VS Code
-2. Instalar extensión PlatformIO IDE
-3. Click en "Upload" (flecha hacia arriba)
-4. Click en "Serial Monitor" para ver logs
+1. Open the project folder in VS Code
+2. Install PlatformIO IDE extension
+3. Click "Upload" (up arrow icon)
+4. Click "Serial Monitor" to view logs
 
 ---
 
-## Uso
+## Usage
 
-### Verificación en Windows
+### Verification on Windows
 
-1. Conectar el Arduino Leonardo
-2. Abrir **Panel de control** → **Dispositivos de juego**
-3. Buscar "Handbrake" en la lista
-4. Probar los ejes moviendo el potenciómetro
+1. Connect the Arduino Leonardo
+2. Open **Control Panel** → **Devices and Printers**
+3. Find "Handbrake" in the list
+4. Test axes by moving the potentiometer
 
-### Verificación en Linux
+### Verification on Linux
 
 ```bash
-# Instalar herramienta de prueba
+# Install testing tool
 sudo apt install joystick
 
-# Probar el joystick
+# Test the joystick
 jstest /dev/input/js0
 ```
 
-### Verificación en macOS
+### Verification on macOS
 
 ```bash
-# Usar JoyStick Show
+# Use JoyStick Show
 open "JoyStick Show.app"
 ```
 
-### Configurar en simuladores
+### Configure in simulators
 
-1. **iRacing**: Opciones → Calibrar freno de mano → Asignar eje
-2. **Assetto Corsa**: Opciones → Controles → Freno de mano → Asignar eje
-3. **F1**: Opciones → Ajustes de control → Freno de mano → Asignar eje
-4. **Gran Turismo**: Ajustes → Controles → Freno de mano
+1. **iRacing**: Options → Calibrate handbrake → Assign axis
+2. **Assetto Corsa**: Options → Controls → Handbrake → Assign axis
+3. **F1**: Options → Control settings → Handbrake → Assign axis
+4. **Gran Turismo**: Settings → Controls → Handbrake
 
 ---
 
-## Calibración
+## Calibration
 
-### Valores por defecto
+### Default values
 
 ```cpp
-const int ADC_REPOSO = 945;    // Valor ADC en reposo
-const int ADC_A_FONDO = 735;   // Valor ADC a fondo de escala
+const int ADC_REPOSO = 945;    // ADC value at rest
+const int ADC_A_FONDO = 735;   // ADC value at full scale
 ```
 
-### Proceso de calibración
+### Calibration process
 
-1. **Medir valor en reposo** (sin tocar el freno):
+1. **Measure rest value** (without touching the handbrake):
    ```bash
-   # Con Arduino conectado, abrir monitor serial
+   # With Arduino connected, open serial monitor
    pio device monitor
-   # Anotar el valor cuando el freno está suelto
+   # Note the value when the handbrake is released
    ```
 
-2. **Medir valor a fondo de escala** (freno total):
+2. **Measure full scale value** (full handbrake pull):
    ```bash
-   # Tirar del freno completamente
-   # Anotar el valor máximo
+   # Pull the handbrake completely
+   # Note the maximum value
    ```
 
-3. **Actualizar constantes** en `src/main.cpp`:
+3. **Update constants** in `src/main.cpp`:
    ```cpp
-   const int ADC_REPOSO = 950;    // Tu valor medido
-   const int ADC_A_FONDO = 720;   // Tu valor medido
+   const int ADC_REPOSO = 950;    // Your measured value
+   const int ADC_A_FONDO = 720;   // Your measured value
    ```
 
-4. **Recompilar y subir**:
+4. **Recompile and upload**:
    ```bash
    pio run -t upload
    ```
 
-### Ajuste fino
+### Fine-tuning
 
-Si el rango no es lineal, puedes ajustar los valores en `CalibrationConfig`:
+If the range is not linear, you can adjust values in `CalibrationConfig`:
 
 ```cpp
 CalibrationConfig config = {
-    .inputMin = 950,    // Valor reposo medido
-    .inputMax = 720,    // Valor fondo medido
-    .outputMin = 0,     // Mínimo joystick
-    .outputMax = 1023   // Máximo joystick
+    .inputMin = 950,    // Measured rest value
+    .inputMax = 720,    // Measured full scale value
+    .outputMin = 0,     // Joystick minimum
+    .outputMax = 1023   // Joystick maximum
 };
 ```
 
 ---
 
-## Arquitectura del software
+## Software architecture
 
-### Principios SOLID aplicados
+### SOLID principles applied
 
-| Principio | Implementación |
+| Principle | Implementation |
 |-----------|----------------|
-| **SRP** | Cada clase tiene UNA responsabilidad |
-| **OCP** | Calibrator extensible con CalibrationConfig |
-| **LSP** | Componentes intercambiables |
-| **ISP** | Interfaces pequeñas y específicas |
-| **DIP** | Inyección de dependencias en HandbrakeController |
+| **SRP** | Each class has ONE responsibility |
+| **OCP** | Calibrator extensible with CalibrationConfig |
+| **LSP** | Interchangeable components |
+| **ISP** | Small and specific interfaces |
+| **DIP** | Dependency injection in HandbrakeController |
 
-### Diagrama de clases
+### Class diagram
 
 ```mermaid
 classDiagram
@@ -283,15 +283,15 @@ classDiagram
     style JoystickSender fill:#9c27b0,color:#fff
 ```
 
-### Flujo de datos
+### Data flow
 
 ```mermaid
 graph LR
-    P["Potenciómetro<br/>0-1023"] --> S["AnalogSensor<br/>Lectura HW"]
-    S --> F["MovingAverageFilter<br/>Suavizado"]
-    F --> C["Calibrator<br/>Mapeo"]
+    P["Potentiometer<br/>0-1023"] --> S["AnalogSensor<br/>HW Reading"]
+    S --> F["MovingAverageFilter<br/>Smoothing"]
+    F --> C["Calibrator<br/>Mapping"]
     C --> J["JoystickSender<br/>USB HID"]
-    J --> U["Simulador<br/>iRacing/AC"]
+    J --> U["Simulator<br/>iRacing/AC"]
     
     style P fill:#607d8b,color:#fff
     style S fill:#4caf50,color:#fff
@@ -301,81 +301,81 @@ graph LR
     style U fill:#f44336,color:#fff
 ```
 
-### Diagrama de secuencia
+### Sequence diagram
 
 ```mermaid
 sequenceDiagram
-    participant P as Potenciómetro
+    participant P as Potentiometer
     participant S as AnalogSensor
     participant F as MovingAverageFilter
     participant C as Calibrator
     participant J as JoystickSender
     participant U as USB HID
     
-    loop Cada 10ms (100Hz)
-        P->>S: Valor analógico
+    loop Every 10ms (100Hz)
+        P->>S: Analog value
         S->>F: rawValue [0-1023]
         F->>C: filteredValue
         C->>J: mappedValue [0-1023]
-        J->>U: Reporte USB
-        U->>U: Simulador procesa
+        J->>U: USB report
+        U->>U: Simulator processes
     end
     
-    Note over P,U: Pipeline completo en cada ciclo
+    Note over P,U: Complete pipeline per cycle
 ```
 
-### Patrones de diseño
+### Design patterns
 
-- **Facade**: HandbrakeController orquesta todo el pipeline
-- **Dependency Injection**: Componentes inyectados por puntero
-- **Single Responsibility**: Cada clase hace una cosa
+- **Facade**: HandbrakeController orchestrates the entire pipeline
+- **Dependency Injection**: Components injected via pointers
+- **Single Responsibility**: Each class does one thing
 
 ---
 
-## Estructura del proyecto
+## Project structure
 
 ```
 sim-handbreak/
 ├── src/
-│   └── main.cpp                    # Punto de entrada - solo configuración
+│   └── main.cpp                    # Entry point - configuration only
 ├── lib/
-│   └── handbrake/                  # Biblioteca principal
+│   └── handbrake/                  # Core library
 │       ├── include/
 │       │   └── handbrake/
-│       │       ├── AnalogSensor.h      # Lectura de hardware
-│       │       ├── MovingAverageFilter.h  # Filtrado de señal
-│       │       ├── Calibrator.h        # Mapeo y calibración
-│       │       ├── JoystickSender.h    # Envío USB
-│       │       └── HandbrakeController.h # Orquestador
+│       │       ├── AnalogSensor.h      # Hardware reading
+│       │       ├── MovingAverageFilter.h  # Signal filtering
+│       │       ├── Calibrator.h        # Value mapping
+│       │       ├── JoystickSender.h    # USB sending
+│       │       └── HandbrakeController.h # Orchestrator
 │       └── src/
 │           ├── AnalogSensor.cpp
 │           ├── MovingAverageFilter.cpp
 │           ├── Calibrator.cpp
 │           ├── JoystickSender.cpp
 │           └── HandbrakeController.cpp
-├── platformio.ini                 # Configuración PlatformIO
-├── AGENTS.md                      # Documentación para agentes
-└── README.md                      # Este archivo
+├── platformio.ini                 # PlatformIO configuration
+├── AGENTS.md                      # Agent documentation
+└── README.md                      # This file
 ```
 
 ---
 
-## API de clases
+## Class API
 
 ### AnalogSensor
 
 ```cpp
-AnalogSensor sensor(A3);  // Pin analógico
-sensor.begin();           // Inicializar
-int value = sensor.read(); // Leer [0-1023]
+AnalogSensor sensor(A3);  // Analog pin
+sensor.begin();           // Initialize
+int value = sensor.read(); // Read [0-1023]
 ```
 
 ### MovingAverageFilter
 
 ```cpp
-MovingAverageFilter filter(8);  // 8 muestras
-filter.begin();                 // Inicializar
-int filtered = filter.process(rawValue);  // Filtrar
+MovingAverageFilter filter(8);  // 8 samples
+filter.begin();                 // Initialize
+int filtered = filter.process(rawValue);  // Filter
 ```
 
 ### Calibrator
@@ -383,49 +383,49 @@ int filtered = filter.process(rawValue);  // Filtrar
 ```cpp
 CalibrationConfig config = {945, 735, 0, 1023};
 Calibrator calibrator(config);
-int mapped = calibrator.map(filteredValue);  // Mapear
+int mapped = calibrator.map(filteredValue);  // Map
 ```
 
 ### JoystickSender
 
 ```cpp
 JoystickSender sender;
-sender.begin();      // Inicializar USB
-sender.send(value);  // Enviar eje Ry
+sender.begin();      // Initialize USB
+sender.send(value);  // Send Ry axis
 ```
 
 ### HandbrakeController
 
 ```cpp
 HandbrakeController handbrake(&sensor, &filter, &calibrator, &sender);
-handbrake.begin();   // Inicializar todo
-handbrake.update();  // Ejecutar pipeline completo
+handbrake.begin();   // Initialize all
+handbrake.update();  // Run full pipeline
 ```
 
 ---
 
-## Configuración
+## Configuration
 
-### Parámetros principales
+### Main parameters
 
-| Archivo | Constante | Valor | Descripción |
-|---------|-----------|-------|-------------|
-| `main.cpp` | `POT_PIN` | A3 | Pin analógico del potenciómetro |
-| `main.cpp` | `FILTER_SAMPLES` | 8 | Tamaño de ventana del filtro |
-| `main.cpp` | `ADC_REPOSO` | 945 | Valor ADC en reposo |
-| `main.cpp` | `ADC_A_FONDO` | 735 | Valor ADC a fondo de escala |
+| File | Constant | Value | Description |
+|------|----------|-------|-------------|
+| `main.cpp` | `POT_PIN` | A3 | Potentiometer analog pin |
+| `main.cpp` | `FILTER_SAMPLES` | 8 | Filter window size |
+| `main.cpp` | `ADC_REPOSO` | 945 | ADC value at rest |
+| `main.cpp` | `ADC_A_FONDO` | 735 | ADC value at full scale |
 
-### Frecuencia de actualización
+### Update frequency
 
-El sistema opera a **100Hz** (intervalo de 10ms):
+The system operates at **100Hz** (10ms interval):
 
 ```cpp
 delay(10);  // 1000ms / 10ms = 100Hz
 ```
 
-### Configuración USB
+### USB configuration
 
-En `platformio.ini`:
+In `platformio.ini`:
 
 ```ini
 board_build.usb_product = "Handbrake"
@@ -434,80 +434,80 @@ board_build.usb_manufacturer = "Adrian"
 
 ---
 
-## Solución de problemas
+## Troubleshooting
 
-### El joystick no aparece
+### Joystick not detected
 
-1. Verificar que el cable USB soporte datos
-2. Probar otro puerto USB
-3. Verificar que `board_build.usb_product` esté configurado
+1. Verify USB cable supports data (not charge-only)
+2. Try another USB port
+3. Check `board_build.usb_product` is configured in `platformio.ini`
 
-### Lecturas inestables
+### Unstable readings
 
-1. **Aumentar FILTER_SAMPLES** (ej: 16 o 32)
-2. **Verificar conexiones** - cables flojos causan ruido
-3. **Agregar condensador** de 100nF entre A3 y GND
+1. **Increase FILTER_SAMPLES** (e.g.: 16 or 32)
+2. **Check connections** - loose wires cause noise
+3. **Add capacitor** - 100nF between A3 and GND
 
-### Valores invertidos
+### Inverted values
 
-Si el freno funciona al revés, intercambiar los valores:
+If the handbrake works in reverse, swap the values:
 
 ```cpp
-const int ADC_REPOSO = 735;    // Antes era ADC_A_FONDO
-const int ADC_A_FONDO = 945;   // Antes era ADC_REPOSO
+const int ADC_REPOSO = 735;    // Was ADC_A_FONDO
+const int ADC_A_FONDO = 945;   // Was ADC_REPOSO
 ```
 
-### Compilación fallida
+### Build fails
 
 ```bash
-# Limpiar y recompilar
+# Clean and rebuild
 pio run -t clean && pio run
 
-# Verificar librerías instaladas
+# Check installed libraries
 pio pkg list
 ```
 
-### Upload fallido
+### Upload fails
 
-1. Presionar botón de reset **dos veces rápido** en el Arduino
-2. Ejecutar upload inmediatamente:
+1. Press reset button **twice quickly** on the Arduino
+2. Upload immediately:
    ```bash
    pio run -t upload
    ```
 
 ---
 
-## Mejoras futuras
+## Future improvements
 
-- [ ] **Zona muerta configurable** - Deadzone para el centro
-- [ ] **Múltiples presets** - Guardar configuraciones en EEPROM
-- [ ] **Auto-calibración** - Rutina automática al iniciar
-- [ ] **LED indicador** - Estado del freno de mano
-- [ ] **Múltiples ejes** - Asignar a diferentes ejes USB
-- [ ] **Firmware OTA** - Actualización via WiFi (ESP32)
-- [ ] **Modo analógico/digital** - Cambio entre modos
-- [ ] **Curva de respuesta** - Configurar lineal/exponencial
-
----
-
-## Contribuir
-
-1. Fork el proyecto
-2. Crear branch (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
+- [ ] **Configurable deadzone** - Center deadzone
+- [ ] **Multiple presets** - Save configurations to EEPROM
+- [ ] **Auto-calibration** - Automatic routine on startup
+- [ ] **LED indicator** - Handbrake status
+- [ ] **Multiple axes** - Assign to different USB axes
+- [ ] **OTA firmware** - WiFi updates (ESP32)
+- [ ] **Analog/digital mode** - Mode switching
+- [ ] **Response curve** - Linear/exponential configuration
 
 ---
 
-## Licencia
+## Contributing
 
-MIT License - Ver [LICENSE](LICENSE) para detalles.
+1. Fork the project
+2. Create branch (`git checkout -b feature/new-feature`)
+3. Commit (`git commit -m 'Add new feature'`)
+4. Push (`git push origin feature/new-feature`)
+5. Open Pull Request
 
 ---
 
-## Créditos
+## License
 
-- [mheironimus/Joystick](https://github.com/mheironimus/Joystick) - Librería USB HID Joystick
-- [PlatformIO](https://platformio.org/) - Sistema de build
-- [Arduino](https://www.arduino.cc/) - Plataforma de hardware
+MIT License - See [LICENSE](LICENSE) for details.
+
+---
+
+## Credits
+
+- [mheironimus/Joystick](https://github.com/mheironimus/Joystick) - USB HID Joystick library
+- [PlatformIO](https://platformio.org/) - Build system
+- [Arduino](https://www.arduino.cc/) - Hardware platform

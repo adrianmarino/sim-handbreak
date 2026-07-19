@@ -3,25 +3,25 @@
 
 /**
  * @struct CalibrationConfig
- * @brief Configuración de calibración para el mapeo de valores.
+ * @brief Calibration configuration for value mapping.
  * 
- * Define los rangos de entrada y salida para el mapeo de valores
- * del sensor analógico al rango del joystick USB.
+ * Defines input and output ranges for mapping analog sensor
+ * values to the USB joystick range.
  */
 struct CalibrationConfig {
-    int inputMin;   ///< Valor mínimo de entrada (ADC reposo)
-    int inputMax;   ///< Valor máximo de entrada (ADC fondo de escala)
-    int outputMin;  ///< Valor mínimo de salida (joystick)
-    int outputMax;  ///< Valor máximo de salida (joystick)
+    int inputMin;   ///< Minimum input value (ADC at rest)
+    int inputMax;   ///< Maximum input value (ADC at full scale)
+    int outputMin;  ///< Minimum output value (joystick)
+    int outputMax;  ///< Maximum output value (joystick)
 };
 
 /**
  * @class Calibrator
- * @brief Clase para mapeo y calibración de valores.
+ * @brief Class for value mapping and calibration.
  * 
- * Convierte valores del rango del ADC (0-1023) al rango deseado
- * del joystick, aplicando constrains para evitar valores fuera
- * de rango. Permite calibración personalizada según el potenciómetro.
+ * Converts values from ADC range (0-1023) to the desired joystick
+ * range, applying constraints to prevent out-of-range values.
+ * Allows custom calibration based on the potentiometer.
  * 
  * @code
  * CalibrationConfig config = {
@@ -35,23 +35,23 @@ struct CalibrationConfig {
  * int mapped = calibrator.map(rawValue);
  * @endcode
  * 
- * @see MovingAverageFilter para filtrado previo al mapeo
+ * @see MovingAverageFilter for pre-mapping filtering
  */
 class Calibrator {
 public:
     /**
-     * @brief Constructor de Calibrator.
-     * @param config Configuración de calibración con rangos de entrada/salida
+     * @brief Calibrator constructor.
+     * @param config Calibration configuration with input/output ranges
      */
     Calibrator(CalibrationConfig config);
 
     /**
-     * @brief Mapea un valor del rango de entrada al rango de salida.
-     * @param value Valor a mapear (típicamente del ADC)
-     * @return Valor mapeado y constraineado al rango de salida
+     * @brief Maps a value from input range to output range.
+     * @param value Value to map (typically from ADC)
+     * @return Mapped and constrained value to output range
      */
     int map(int value);
 
 private:
-    CalibrationConfig _config; ///< Configuración de calibración almacenada
+    CalibrationConfig _config; ///< Stored calibration configuration
 };
