@@ -173,10 +173,13 @@ open "JoyStick Show.app"
 
 The system supports automatic calibration via external button:
 
-1. **Hold calibration button for 3 seconds** → LED starts fast blinking
-2. **Move handbrake through full range** (rest to full pull) during calibration
-3. **Wait 3 seconds** → LED stops blinking, calibration saved to EEPROM
-4. **Reboot** → Calibration persists automatically
+1. **Hold calibration button for 3 seconds** → LED starts slow blinking
+2. **Release button** → LED starts fast blinking (calibrating now)
+3. **Move handbrake through full range** (rest to full pull) within 3 seconds
+4. **Wait** → LED stops blinking, calibration saved to EEPROM
+5. **Reboot** → Calibration persists automatically
+
+> **Important**: You have 3 seconds after releasing the button to move the handbrake through its full range.
 
 ```mermaid
 sequenceDiagram
