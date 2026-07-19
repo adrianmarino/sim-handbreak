@@ -197,7 +197,9 @@ sequenceDiagram
 | Component | Pin | Description |
 |-----------|-----|-------------|
 | Calibration button | D2 | Momentary push button (INPUT_PULLUP) |
-| Status LED | 13 | Built-in LED on Arduino Leonardo |
+| Status LED | 13 | Built-in LED (no resistor needed) |
+
+> **Note**: The built-in LED on pin 13 already has an on-board resistor. If using an external LED, add a 220Ω-330Ω resistor in series.
 
 ```mermaid
 graph TD
