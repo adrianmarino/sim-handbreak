@@ -46,6 +46,8 @@ Converts the analog reading of a potentiometer into a USB joystick axis automati
 | Arduino Leonardo | 1 | Microcontroller with native USB (ATmega32U4) |
 | Linear potentiometer | 1 | 10KΩ recommended (0-10KΩ) |
 | Push button | 1 | Momentary tactile button (for calibration) |
+| External LED | 1 | Status indicator (calibration feedback) |
+| Resistor | 1 | 220Ω-330Ω for LED |
 | USB cable | 1 | Micro-USB (data support, not charge-only) |
 | Protoboard/Wires | - | For temporary connections |
 
@@ -197,9 +199,9 @@ sequenceDiagram
 | Component | Pin | Description |
 |-----------|-----|-------------|
 | Calibration button | D2 | Momentary push button (INPUT_PULLUP) |
-| Status LED | 13 | Built-in LED (no resistor needed) |
+| Status LED | 13 | External LED with 220Ω-330Ω resistor |
 
-> **Note**: The built-in LED on pin 13 already has an on-board resistor. If using an external LED, add a 220Ω-330Ω resistor in series.
+> **Important**: Since the Arduino is inside the case, use an external LED with a 220Ω-330Ω resistor in series for calibration feedback.
 
 ```mermaid
 graph TD
@@ -214,13 +216,24 @@ graph TD
         B2["Terminal 2"]
     end
     
+    subgraph ExternalLED["External LED"]
+        R["220Ω-330Ω Resistor"]
+        L["LED"]
+    end
+    
     D2 --> B1
     B2 --> GND
+    LED --> R
+    R --> L
+    L --> GND
     
     style Arduino fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
     style Button fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    style ExternalLED fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     style D2 fill:#4caf50,color:#fff
     style LED fill:#ff9800,color:#fff
+    style R fill:#795548,color:#fff
+    style L fill:#ff5722,color:#fff
 ```
 
 #### How it works
