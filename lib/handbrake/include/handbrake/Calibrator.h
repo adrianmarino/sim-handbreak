@@ -52,6 +52,18 @@ public:
      */
     int map(int value);
 
+    /**
+     * @brief Update calibration configuration at runtime.
+     * @param config New calibration configuration
+     */
+    void setConfig(CalibrationConfig config);
+
+    /**
+     * @brief Get current calibration configuration.
+     * @return Current CalibrationConfig
+     */
+    CalibrationConfig getConfig() const;
+
 private:
     CalibrationConfig _config; ///< Stored calibration configuration
 };

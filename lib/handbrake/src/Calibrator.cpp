@@ -7,3 +7,11 @@ int Calibrator::map(int value) {
                       _config.outputMin, _config.outputMax);
     return constrain(mapped, _config.outputMin, _config.outputMax);
 }
+
+void Calibrator::setConfig(CalibrationConfig config) {
+    _config = config;
+}
+
+CalibrationConfig Calibrator::getConfig() const {
+    return _config;
+}

@@ -45,6 +45,7 @@ Converts the analog reading of a potentiometer into a USB joystick axis automati
 |-----------|----------|-------------|
 | Arduino Leonardo | 1 | Microcontroller with native USB (ATmega32U4) |
 | Linear potentiometer | 1 | 10KΩ recommended (0-10KΩ) |
+| Push button | 1 | Momentary tactile button (for calibration) |
 | USB cable | 1 | Micro-USB (data support, not charge-only) |
 | Protoboard/Wires | - | For temporary connections |
 
@@ -166,14 +167,80 @@ open "JoyStick Show.app"
 
 ## Calibration
 
-### Default values
+### Auto-calibration (recommended)
 
-```cpp
-const int ADC_REPOSO = 945;    // ADC value at rest
-const int ADC_A_FONDO = 735;   // ADC value at full scale
+The system supports automatic calibration via external button:
+
+1. **Hold calibration button for 3 seconds** → LED starts fast blinking
+2. **Move handbrake through full range** (rest to full pull) during calibration
+3. **Wait 3 seconds** → LED stops blinking, calibration saved to EEPROM
+4. **Reboot** → Calibration persists automatically
+
+```mermaid
+sequenceDiagram
+    participant B as Button
+    participant L as LED
+    participant C as AutoCalibrator
+    participant E as EEPROM
+    
+    Note over B,E: Boot - Load from EEPROM
+    B->>C: Hold 3 seconds
+    C->>L: Fast blink (calibrating)
+    C->>C: Detect min/max ADC (3s)
+    C->>E: Save calibration
+    C->>L: Off (done)
+    Note over B,E: Normal operation
 ```
 
-### Calibration process
+#### Calibration hardware
+
+| Component | Pin | Description |
+|-----------|-----|-------------|
+| Calibration button | D2 | Momentary push button (INPUT_PULLUP) |
+| Status LED | 13 | Built-in LED on Arduino Leonardo |
+
+```mermaid
+graph TD
+    subgraph Arduino["Arduino Leonardo"]
+        D2["D2 - Button"]
+        LED["Pin 13 - LED"]
+        GND["GND"]
+    end
+    
+    subgraph Button["Push Button"]
+        B1["Terminal 1"]
+        B2["Terminal 2"]
+    end
+    
+    D2 --> B1
+    B2 --> GND
+    
+    style Arduino fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style Button fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    style D2 fill:#4caf50,color:#fff
+    style LED fill:#ff9800,color:#fff
+```
+
+#### How it works
+
+- **On boot**: System checks EEPROM for saved calibration
+- **If valid**: Uses saved values (no recalibration needed)
+- **If empty**: Uses default values (945/735) until calibration
+- **Button press**: Hold 3 seconds to enter calibration mode
+- **During calibration**: ADC min/max detected over 3 seconds
+- **After calibration**: Values saved to EEPROM (5 bytes)
+
+#### EEPROM storage
+
+| Address | Size | Content |
+|---------|------|---------|
+| 0x00 | 1 byte | Magic byte (0xA5 = valid) |
+| 0x01 | 2 bytes | inputMin (uint16) |
+| 0x03 | 2 bytes | inputMax (uint16) |
+
+### Manual calibration (alternative)
+
+If you prefer manual calibration without the button:
 
 1. **Measure rest value** (without touching the handbrake):
    ```bash
@@ -252,6 +319,20 @@ classDiagram
         -CalibrationConfig _config
         +Calibrator(CalibrationConfig config)
         +int map(int value)
+        +void setConfig(CalibrationConfig config)
+        +CalibrationConfig getConfig()
+    }
+    
+    class AutoCalibrator {
+        -uint8_t _buttonPin
+        -uint8_t _ledPin
+        -bool _calibrating
+        -CalibrationConfig _config
+        +AutoCalibrator(buttonPin, ledPin)
+        +void begin()
+        +void update(int adcValue)
+        +bool isCalibrating()
+        +CalibrationConfig getConfig()
     }
     
     class JoystickSender {
@@ -266,20 +347,24 @@ classDiagram
         -MovingAverageFilter* _filter
         -Calibrator* _calibrator
         -JoystickSender* _sender
-        +HandbrakeController(sensor, filter, calibrator, sender)
+        -AutoCalibrator* _autoCal
+        +HandbrakeController(sensor, filter, calibrator, sender, autoCal)
         +void begin()
         +void update()
+        +bool isCalibrating()
     }
     
     HandbrakeController --> AnalogSensor : uses
     HandbrakeController --> MovingAverageFilter : uses
     HandbrakeController --> Calibrator : uses
     HandbrakeController --> JoystickSender : uses
+    HandbrakeController --> AutoCalibrator : uses
     
     style HandbrakeController fill:#e91e63,color:#fff
     style AnalogSensor fill:#4caf50,color:#fff
     style MovingAverageFilter fill:#2196f3,color:#fff
     style Calibrator fill:#ff9800,color:#fff
+    style AutoCalibrator fill:#00bcd4,color:#fff
     style JoystickSender fill:#9c27b0,color:#fff
 ```
 
@@ -345,12 +430,14 @@ sim-handbreak/
 │       │       ├── AnalogSensor.h      # Hardware reading
 │       │       ├── MovingAverageFilter.h  # Signal filtering
 │       │       ├── Calibrator.h        # Value mapping
+│       │       ├── AutoCalibrator.h    # Auto-calibration with EEPROM
 │       │       ├── JoystickSender.h    # USB sending
 │       │       └── HandbrakeController.h # Orchestrator
 │       └── src/
 │           ├── AnalogSensor.cpp
 │           ├── MovingAverageFilter.cpp
 │           ├── Calibrator.cpp
+│           ├── AutoCalibrator.cpp
 │           ├── JoystickSender.cpp
 │           └── HandbrakeController.cpp
 ├── platformio.ini                 # PlatformIO configuration
@@ -384,6 +471,23 @@ int filtered = filter.process(rawValue);  // Filter
 CalibrationConfig config = {945, 735, 0, 1023};
 Calibrator calibrator(config);
 int mapped = calibrator.map(filteredValue);  // Map
+calibrator.setConfig(newConfig);             // Update config at runtime
+CalibrationConfig current = calibrator.getConfig();  // Get current config
+```
+
+### AutoCalibrator
+
+```cpp
+AutoCalibrator autoCal(2, 13);  // Button on pin 2, LED on pin 13
+autoCal.begin();                // Load from EEPROM
+
+// In loop:
+autoCal.update(filteredValue);  // Update button state and calibration
+if (autoCal.isCalibrating()) {
+    // Skip normal handbrake update
+    return;
+}
+CalibrationConfig config = autoCal.getConfig();  // Get current config
 ```
 
 ### JoystickSender
@@ -397,9 +501,10 @@ sender.send(value);  // Send Ry axis
 ### HandbrakeController
 
 ```cpp
-HandbrakeController handbrake(&sensor, &filter, &calibrator, &sender);
-handbrake.begin();   // Initialize all
-handbrake.update();  // Run full pipeline
+HandbrakeController handbrake(&sensor, &filter, &calibrator, &sender, &autoCal);
+handbrake.begin();          // Initialize all components
+handbrake.update();         // Run full pipeline
+handbrake.isCalibrating();  // Check if in calibration mode
 ```
 
 ---
@@ -412,8 +517,10 @@ handbrake.update();  // Run full pipeline
 |------|----------|-------|-------------|
 | `main.cpp` | `POT_PIN` | A3 | Potentiometer analog pin |
 | `main.cpp` | `FILTER_SAMPLES` | 8 | Filter window size |
-| `main.cpp` | `ADC_REPOSO` | 945 | ADC value at rest |
-| `main.cpp` | `ADC_A_FONDO` | 735 | ADC value at full scale |
+| `main.cpp` | `CALIBRATION_BUTTON_PIN` | 2 | Calibration button (INPUT_PULLUP) |
+| `main.cpp` | `CALIBRATION_LED_PIN` | 13 | Status LED (built-in) |
+| `main.cpp` | `ADC_REPOSO` | 945 | Default ADC value at rest |
+| `main.cpp` | `ADC_A_FONDO` | 735 | Default ADC value at full scale |
 
 ### Update frequency
 

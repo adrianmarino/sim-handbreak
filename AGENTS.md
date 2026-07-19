@@ -22,15 +22,18 @@ sim-handbreak/
 │       │       ├── AnalogSensor.h
 │       │       ├── MovingAverageFilter.h
 │       │       ├── Calibrator.h
+│       │       ├── AutoCalibrator.h
 │       │       ├── JoystickSender.h
 │       │       └── HandbrakeController.h
 │       └── src/
 │           ├── AnalogSensor.cpp
 │           ├── MovingAverageFilter.cpp
 │           ├── Calibrator.cpp
+│           ├── AutoCalibrator.cpp
 │           ├── JoystickSender.cpp
 │           └── HandbrakeController.cpp
 ├── platformio.ini
+├── AGENTS.md
 └── README.md
 ```
 
@@ -62,6 +65,7 @@ pio run -t upload && pio device monitor
 | `AnalogSensor` | Read analog pin | SRP |
 | `MovingAverageFilter` | Signal filtering | SRP |
 | `Calibrator` | Map/calibrate values | SRP, OCP |
+| `AutoCalibrator` | Automatic calibration with EEPROM | SRP, ISP |
 | `JoystickSender` | USB HID output | SRP |
 | `HandbrakeController` | Orchestrate pipeline | SRP, DIP |
 
@@ -81,7 +85,8 @@ HandbrakeController (Facade)
 ├── AnalogSensor*        (injected)
 ├── MovingAverageFilter* (injected)
 ├── Calibrator*          (injected)
-└── JoystickSender*      (injected)
+├── JoystickSender*      (injected)
+└── AutoCalibrator*      (injected)
 ```
 
 ## Configuration Parameters
@@ -92,8 +97,27 @@ HandbrakeController (Facade)
 |-----------|-------|-------------|
 | `POT_PIN` | A3 | Analog input pin |
 | `FILTER_SAMPLES` | 8 | Moving average window size |
-| `ADC_REPOSO` | 945 | ADC value at rest position |
-| `ADC_A_FONDO` | 735 | ADC value at full pull |
+| `CALIBRATION_BUTTON_PIN` | 2 | Calibration button pin (INPUT_PULLUP) |
+| `CALIBRATION_LED_PIN` | 13 | LED feedback pin (built-in LED) |
+| `ADC_REPOSO` | 945 | Default ADC value at rest |
+| `ADC_A_FONDO` | 735 | Default ADC value at full pull |
+
+### Auto-Calibration
+
+The system supports automatic calibration via external button:
+
+1. **Hold button for 3 seconds** → Enter calibration mode (LED fast blink)
+2. **Move handbrake through full range** during 3-second calibration window
+3. **Release button** → Configuration saved to EEPROM
+4. **Reboot** → Calibration persists from EEPROM
+
+### EEPROM Storage (5 bytes)
+
+| Address | Size | Content |
+|---------|------|---------|
+| 0x00 | 1 byte | Magic byte (0xA5 = valid) |
+| 0x01 | 2 bytes | inputMin (uint16) |
+| 0x03 | 2 bytes | inputMax (uint16) |
 
 ### Calibration
 
@@ -147,7 +171,7 @@ CalibrationConfig config = {
 - **Board**: Arduino Leonardo (ATmega32U4 with native USB)
 - **USB**: Native USB HID, no drivers needed on most OS
 - **ADC**: 10-bit (0-1023)
-- **Calibration**: Measure actual pot values with multimeter, update `ADC_REPOSO` and `ADC_A_FONDO`
+- **Calibration**: Use auto-calibration button or set defaults in code
 
 ## Troubleshooting
 
@@ -177,9 +201,9 @@ pio run -t upload
 
 ## Future Improvements
 
+- [x] Add EEPROM storage for calibration
+- [x] Implement auto-calibration routine
+- [x] Add LED status indicator
 - [ ] Add deadzone configuration
 - [ ] Support multiple calibration presets
-- [ ] Add EEPROM storage for calibration
-- [ ] Implement auto-calibration routine
-- [ ] Add LED status indicator
 - [ ] Support multiple axis mappings
